@@ -1,46 +1,113 @@
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Movement : MonoBehaviour
 {
-    public float moveSpeed = 8f;
-    public float airMultiplier = 0.4f;
-    public float jumpForce = 12f;
-    public float mouseSensivity = 100f;
+    public float moveSpeed = 5f;
+    public float jumpForce = 5f;
+    public float mouseSensitivity = 100f;
+
+    public Transform playerCamera;
+    public Transform groundCheck;
+    public LayerMask groundMask;
 
     private Rigidbody rb;
-    private Vector2 moveInput;
-    private Vector2 mouseInput;
     private float xRotation = 0f;
     private bool isGrounded;
+    private bool cursorIsLocked = true;
 
-    private void Awake()
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    private void Update()
+    void Update()
     {
-
+        Jump();
+    }
+    private void LateUpdate()
+    {
+        Looking();
     }
 
-    private void GetInputs()
+    void FixedUpdate()
     {
-        moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
-        mouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        Move();
     }
 
-    private void HandleMovement()
+    void Move()
     {
-        Vector3 moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
 
-        if (isGrounded)
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+        Vector3 moveDirection;
+        if (playerCamera.gameObject.activeSelf)
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+            moveDirection = transform.right * x + transform.forward * z;
+
         }
-        else {
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * air)
+        else
+        {
+            moveDirection = (Vector3.forward * z) + (Vector3.right * x);
+        }
+        Vector3 newVelocity = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);
+        rb.linearVelocity = newVelocity;
+
+
+
+    }
+
+    void Looking()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            cursorIsLocked = !cursorIsLocked;
+        }
+
+        if (cursorIsLocked)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            if (playerCamera.gameObject.activeSelf)
+            {
+                Look();
+
+            }
+            else
+            {
+                return;
+            }
+
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
+
+    void Look()
+    {
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
+        playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        transform.Rotate(Vector3.up * mouseX);
+    }
+
+    void Jump()
+    {
+        isGrounded = Physics.CheckSphere(groundCheck.position, 0.4f, groundMask);
+
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
     }
 }
