@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 126ad0a7042d15b4b96032a35ebd40d9, type: 3}
-  m_Name: MP3
+  m_Name: UMP
   m_EditorClassIdentifier: 
   fireRate: 0.06
-  damage: 12
+  damage: 24
   maxAmmo: 27
   reloadDuration: 3
-  range: 100
+  range: 30

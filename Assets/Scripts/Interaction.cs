@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Interaction : MonoBehaviour
 {
+    public InventorySystem inventorySystem;
     public Camera fpsCamera;
     public Transform hand;
     public float interactionRange = 3f;
@@ -32,8 +33,7 @@ public class Interaction : MonoBehaviour
                     WeaponController weapon = hit.collider.GetComponent<WeaponController>();
                     if (weapon != null)
                     {
-
-                        weapon.PickUp(hand);
+                        inventorySystem.PickUp(hit.collider.gameObject);
                     }
                 }
 

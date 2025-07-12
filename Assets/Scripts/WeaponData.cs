@@ -8,5 +8,4 @@ public class WeaponData : ScriptableObject
     public int maxAmmo;
     public float reloadDuration;
     public float range;
-    
 }

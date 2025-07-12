@@ -2,11 +2,12 @@ using TMPro;
 using TMPro.EditorUtilities;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class UI : MonoBehaviour
+public class UIManager : MonoBehaviour
 {
-    public GameObject itemPrefab;
 
+    public TextMeshProUGUI ammoDisplay;
     public Camera mainCamera;
     public Camera camera1;
     public Transform panel;
@@ -34,4 +35,13 @@ public class UI : MonoBehaviour
         }
     }
 
+    public void UpdateAmmoDislay(int currentAmmo, int maxAmmo)
+    {
+        ammoDisplay.text = currentAmmo + "/" + maxAmmo;
+    }
+
+    public void AmmoDisplay(bool show)
+    {
+        ammoDisplay.enabled = show;
+    }
 }
