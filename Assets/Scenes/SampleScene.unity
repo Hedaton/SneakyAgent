@@ -964,6 +964,7 @@ GameObject:
   - component: {fileID: 260690703}
   - component: {fileID: 260690702}
   - component: {fileID: 260690708}
+  - component: {fileID: 260690709}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1123,9 +1124,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46e73a8f9f3c5d04e82d0703a6eec3db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inventorySystem: {fileID: 260690709}
   fpsCamera: {fileID: 330585545}
   hand: {fileID: 2000159958}
   interactionRange: 3
+--- !u!114 &260690709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 260690701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d42eeafcaf7393f4f923df7c50698e5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hand: {fileID: 2000159958}
+  inventory: []
+  inventoryCapacity: 5
+  equippedItem: {fileID: 0}
 --- !u!1 &281374533
 GameObject:
   m_ObjectHideFlags: 0
@@ -10954,6 +10972,10 @@ PrefabInstance:
       propertyPath: uiManager
       value: 
       objectReference: {fileID: 1092423006}
+    - target: {fileID: 2260644320848506997, guid: 4c54219276984024ba3c42bc6ecfe635, type: 3}
+      propertyPath: inventorySystem
+      value: 
+      objectReference: {fileID: 260690709}
     - target: {fileID: 4094384273943218104, guid: 4c54219276984024ba3c42bc6ecfe635, type: 3}
       propertyPath: m_Name
       value: UMP
@@ -11124,6 +11146,10 @@ PrefabInstance:
       propertyPath: uiManager
       value: 
       objectReference: {fileID: 1092423006}
+    - target: {fileID: 8574658064470903751, guid: 5d219e0ead149e54eb6192acf0459418, type: 3}
+      propertyPath: inventorySystem
+      value: 
+      objectReference: {fileID: 260690709}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

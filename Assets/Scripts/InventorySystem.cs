@@ -9,6 +9,7 @@ public class InventorySystem : MonoBehaviour
     public List<GameObject> inventory = new List<GameObject>();
     public int inventoryCapacity = 5;
     public GameObject equippedItem;
+    public bool isHolding;
 
     private void Update()
     {
@@ -17,12 +18,9 @@ public class InventorySystem : MonoBehaviour
 
         for (int i = 0; i < inventoryCapacity; i++)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1 + i))
+            if (Input.GetKeyDown(KeyCode.Alpha1 + i) && i < inventory.Count)
             {
-                if (i < inventory.Count)
-                {
-                    EquipItem(inventory[i]);
-                }
+                EquipItem(inventory[i]);
             }
         }
     }
@@ -35,7 +33,7 @@ public class InventorySystem : MonoBehaviour
         BoxCollider[] colliders = item.GetComponentsInChildren<BoxCollider>();
         foreach (BoxCollider collider in colliders)
         {
-            collider.gameObject.SetActive(false);
+            collider.enabled = false;
         }
         Rigidbody rb = item.GetComponent<Rigidbody>();
         if (rb != null)
@@ -46,27 +44,46 @@ public class InventorySystem : MonoBehaviour
         EquipItem(item);
     }
 
-    public void EquipItem(GameObject item)
+    public void EquipItem(GameObject itemToEquip)
     {
+        if (equippedItem == itemToEquip)
+            return;
         if (equippedItem != null)
         {
+            IEquippable oldItem = equippedItem.GetComponent<IEquippable>();
+            if(oldItem != null)
+            {
+                oldItem.OnUnequip();
+            }
             equippedItem.SetActive(false);
+            
         }
-        equippedItem = item;
+        equippedItem = itemToEquip;
         equippedItem.SetActive(true);
-        item.transform.SetParent(hand);
-        item.transform.localPosition = Vector3.zero;
-        item.transform.localRotation = Quaternion.identity;
+
+        IEquippable newItem = equippedItem.GetComponent<IEquippable>();
+        if(newItem != null)
+        {
+            newItem.OnEquip();
+        }
+        itemToEquip.transform.SetParent(hand);
+        itemToEquip.transform.localPosition = Vector3.zero;
+        itemToEquip.transform.localRotation = Quaternion.identity;
     }
 
     public void Drop(GameObject item)
     {
         inventory.Remove(item);
         item.transform.SetParent(null);
+        IEquippable oldItem = equippedItem.GetComponent<IEquippable>();
+        if (oldItem != null)
+        {
+            oldItem.OnUnequip();
+        }
         BoxCollider[] colliders = item.GetComponentsInChildren<BoxCollider>();
         foreach (BoxCollider collider in colliders)
         {
-            collider.gameObject.SetActive(true);
+            collider.enabled = enabled;
         }
         Rigidbody rb = item.GetComponent<Rigidbody>();
         if (rb != null)

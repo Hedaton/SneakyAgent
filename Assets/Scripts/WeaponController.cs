@@ -1,9 +1,10 @@
-using System.Collections;
+﻿using System.Collections;
+using System.Linq.Expressions;
 using TMPro.EditorUtilities;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class WeaponController : MonoBehaviour
+public class WeaponController : MonoBehaviour, IEquippable
 {
     public Camera fpsCamera;
     public WeaponData weaponData;
@@ -19,10 +20,12 @@ public class WeaponController : MonoBehaviour
 
     private Animator animator;
     private AudioSource audioSource;
+    private Coroutine reloadCoroutine;
     private float _range;
     private float nextTimeToFire = 0f;
     private bool isReloading;
-    private bool wasEquippedLastFrame = false;
+    private bool isEquipped;
+
 
 
     private void Start()
@@ -37,16 +40,7 @@ public class WeaponController : MonoBehaviour
     }
 
     private void Update()
-    {
-        bool isEquipped = inventorySystem.equippedItem == gameObject;
-
-        if (isEquipped != wasEquippedLastFrame)
-        {
-            uiManager.AmmoDisplay(isEquipped);
-            if (isEquipped) UpdateAmmo();
-            wasEquippedLastFrame = isEquipped;
-        }
-
+    { 
         if (!isEquipped || isReloading) return;
 
         if (Input.GetMouseButton(0) && currentAmmo > 0 && Time.time >= nextTimeToFire)
@@ -58,12 +52,16 @@ public class WeaponController : MonoBehaviour
         if ((Input.GetKeyDown(KeyCode.R) && totalAmmo > 0 && currentAmmo < weaponData.maxAmmo) ||
             (currentAmmo == 0 && totalAmmo > 0))
         {
-            StartCoroutine(Reload());
+            if (reloadCoroutine == null)
+            {
+                reloadCoroutine = StartCoroutine(Reload());
+            }
         }
     }
 
     private void Shoot()
     {
+        
         currentAmmo--;
         UpdateAmmo();
         animator.SetTrigger("Shoot");
@@ -103,7 +101,44 @@ public class WeaponController : MonoBehaviour
         UpdateAmmo();
 
         isReloading = false;
+        reloadCoroutine = null;
     }
+
+    public void CancelReload()
+    {
+        if (reloadCoroutine != null)
+        {
+            StopCoroutine(reloadCoroutine);
+            reloadCoroutine = null;
+            isReloading = false;
+
+            if (audioSource != null && audioSource.isPlaying)
+                audioSource.Stop();
+            if(animator != null)
+            {
+                animator.Rebind();
+            }
+        }
+    }
+
+    public void OnEquip()
+    {
+        isEquipped = true;
+        uiManager.AmmoDisplay(true);
+        UpdateAmmo();
+    }
+
+    public void OnUnequip()
+    {
+        isEquipped = false;
+        if(uiManager != null)
+        {
+            uiManager.AmmoDisplay(false);
+        }
+        CancelReload();
+    }
+
+
 
 
     public void AddAmmo(int amount)
@@ -119,6 +154,5 @@ public class WeaponController : MonoBehaviour
             uiManager.UpdateAmmoDislay(currentAmmo, totalAmmo);
         }
     }
-
 
 }
