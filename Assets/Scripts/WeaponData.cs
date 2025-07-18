@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "WeaponData", menuName = "Scriptable Objects/WeaponData")]
-public class WeaponData : ScriptableObject
+[CreateAssetMenu(fileName = "WeaponData", menuName = "Item Data/WeaponData")]
+public class WeaponData : ItemData
 {
     public float fireRate;
     public float damage;

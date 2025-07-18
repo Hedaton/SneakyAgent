@@ -308,6 +308,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fpsCamera: {fileID: 0}
   weaponData: {fileID: 11400000, guid: 8f4e29dcf61a1d24e82145f7a8fe96be, type: 2}
+  inventorySystem: {fileID: 0}
   uiManager: {fileID: 0}
   shootSound: {fileID: 8300000, guid: c0a0f8bc875397f43a2d4ec05adee0d1, type: 3}
   reloadSound: {fileID: 8300000, guid: ca1dea649255ff9479cb817448a7027c, type: 3}

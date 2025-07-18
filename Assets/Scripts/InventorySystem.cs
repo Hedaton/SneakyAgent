@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class InventorySystem : MonoBehaviour
 {
@@ -9,7 +7,17 @@ public class InventorySystem : MonoBehaviour
     public List<GameObject> inventory = new List<GameObject>();
     public int inventoryCapacity = 5;
     public GameObject equippedItem;
-    public bool isHolding;
+    private int equippedItemIndex = -1;
+    public UIManager uiManager;
+
+    private void Start()
+    {
+        if (uiManager != null)
+        {
+            uiManager.UpdateHotbarUI();
+            uiManager.UpdateHotbarHighlight(-1);
+        }
+    }
 
     private void Update()
     {
@@ -27,9 +35,12 @@ public class InventorySystem : MonoBehaviour
 
     public void PickUp(GameObject item)
     {
-        if (inventory.Count >= inventoryCapacity)
-            return;
+        if (inventory.Count >= inventoryCapacity) return;
         inventory.Add(item);
+        if (uiManager != null)
+        {
+            uiManager.UpdateHotbarUI();
+        }
         BoxCollider[] colliders = item.GetComponentsInChildren<BoxCollider>();
         foreach (BoxCollider collider in colliders)
         {
@@ -51,29 +62,41 @@ public class InventorySystem : MonoBehaviour
         if (equippedItem != null)
         {
             IEquippable oldItem = equippedItem.GetComponent<IEquippable>();
-            if(oldItem != null)
+            if (oldItem != null)
             {
                 oldItem.OnUnequip();
             }
             equippedItem.SetActive(false);
-            
+
         }
         equippedItem = itemToEquip;
         equippedItem.SetActive(true);
 
         IEquippable newItem = equippedItem.GetComponent<IEquippable>();
-        if(newItem != null)
+        if (newItem != null)
         {
             newItem.OnEquip();
         }
         itemToEquip.transform.SetParent(hand);
         itemToEquip.transform.localPosition = Vector3.zero;
         itemToEquip.transform.localRotation = Quaternion.identity;
+
+        equippedItemIndex = inventory.IndexOf(itemToEquip);
+        if (uiManager != null)
+        {
+            uiManager.UpdateHotbarHighlight(equippedItemIndex);
+        }
     }
 
     public void Drop(GameObject item)
     {
         inventory.Remove(item);
+
+        if(uiManager != null)
+        {
+            uiManager.UpdateHotbarUI();
+        }
+
         item.transform.SetParent(null);
         IEquippable oldItem = equippedItem.GetComponent<IEquippable>();
         if (oldItem != null)
@@ -95,4 +118,5 @@ public class InventorySystem : MonoBehaviour
         item.SetActive(true);
         equippedItem = null;
     }
+
 }

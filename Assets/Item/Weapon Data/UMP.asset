@@ -10,10 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 126ad0a7042d15b4b96032a35ebd40d9, type: 3}
-  m_Name: M4
+  m_Name: UMP
   m_EditorClassIdentifier: 
-  fireRate: 0.1
-  damage: 47
-  maxAmmo: 30
+  itemName: UMP Gun
+  description: Its an smg gun
+  itemIcon: {fileID: 21300000, guid: 2e19aa60e6917b641ad82149bbffc0d3, type: 3}
+  itemPrefab: {fileID: 4094384273943218104, guid: 4c54219276984024ba3c42bc6ecfe635, type: 3}
+  fireRate: 0.06
+  damage: 24
+  maxAmmo: 27
   reloadDuration: 3
-  range: 60
+  range: 30

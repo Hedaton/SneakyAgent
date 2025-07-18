@@ -14,7 +14,24 @@ public class Interaction : MonoBehaviour
             RaycastHit hit;
             if(Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, interactionRange))
             {
-                if (hit.collider.CompareTag("Ammo"))
+                if (hit.collider.CompareTag("Pickable"))
+                {
+
+                    Item item = hit.collider.GetComponent<Item>();
+                    if (item != null)
+                    {
+                        inventorySystem.PickUp(hit.collider.gameObject);
+                    }
+                }
+                else if (hit.collider.CompareTag("Weapon"))
+                {
+                    WeaponController weaponController = hit.collider.GetComponent<WeaponController>();
+                    if (weaponController != null)
+                    {
+                        inventorySystem.PickUp(hit.collider.gameObject);
+                    }
+                }
+                else if (hit.collider.CompareTag("Ammo"))
                 {
                     AmmoItem ammoItem = hit.collider.GetComponent<AmmoItem>();
                     if (ammoItem != null)
@@ -27,15 +44,7 @@ public class Interaction : MonoBehaviour
                         }
                     }
                 }
-                else if (hit.collider.CompareTag("Weapon"))
-                {
-
-                    WeaponController weapon = hit.collider.GetComponent<WeaponController>();
-                    if (weapon != null)
-                    {
-                        inventorySystem.PickUp(hit.collider.gameObject);
-                    }
-                }
+                
 
                 
 
