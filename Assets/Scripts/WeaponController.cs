@@ -4,10 +4,10 @@ using TMPro.EditorUtilities;
 using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent(typeof(Item))]
 public class WeaponController : MonoBehaviour, IEquippable
 {
     public Camera fpsCamera;
-    public WeaponData weaponData;
     public InventorySystem inventorySystem;
     public UIManager uiManager;
     public AudioClip shootSound;
@@ -18,6 +18,7 @@ public class WeaponController : MonoBehaviour, IEquippable
     public int currentAmmo;
     public int totalAmmo;
 
+    private WeaponData weaponData;
     private Animator animator;
     private AudioSource audioSource;
     private Coroutine reloadCoroutine;
@@ -30,6 +31,15 @@ public class WeaponController : MonoBehaviour, IEquippable
 
     private void Start()
     {
+        Item item = GetComponent<Item>();
+        weaponData = item.itemData as WeaponData;
+        if (weaponData == null)
+        {
+            Debug.LogError("WeaponData is not set on the item.");
+            this.enabled = false;
+            return;
+        }
+
         audioSource = GetComponent<AudioSource>();
         animator = GetComponentInChildren<Animator>();
         if (overrideController != null)

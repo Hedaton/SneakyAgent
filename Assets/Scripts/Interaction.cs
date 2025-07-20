@@ -23,14 +23,6 @@ public class Interaction : MonoBehaviour
                         inventorySystem.PickUp(hit.collider.gameObject);
                     }
                 }
-                else if (hit.collider.CompareTag("Weapon"))
-                {
-                    WeaponController weaponController = hit.collider.GetComponent<WeaponController>();
-                    if (weaponController != null)
-                    {
-                        inventorySystem.PickUp(hit.collider.gameObject);
-                    }
-                }
                 else if (hit.collider.CompareTag("Ammo"))
                 {
                     AmmoItem ammoItem = hit.collider.GetComponent<AmmoItem>();

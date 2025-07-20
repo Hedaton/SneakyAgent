@@ -157,11 +157,12 @@ GameObject:
   - component: {fileID: 234664314347432548}
   - component: {fileID: 6496183082392814519}
   - component: {fileID: 6029739155244322635}
+  - component: {fileID: 9187520303078384270}
   - component: {fileID: 8574658064470903751}
   - component: {fileID: 9175449958855284713}
   m_Layer: 0
   m_Name: M4
-  m_TagString: Weapon
+  m_TagString: Pickable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -294,6 +295,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &9187520303078384270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5356733870175154949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ca005224f79a7c4ab6e639df0411d77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemData: {fileID: 11400000, guid: 8f4e29dcf61a1d24e82145f7a8fe96be, type: 2}
 --- !u!114 &8574658064470903751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,7 +321,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fpsCamera: {fileID: 0}
-  weaponData: {fileID: 11400000, guid: 8f4e29dcf61a1d24e82145f7a8fe96be, type: 2}
   inventorySystem: {fileID: 0}
   uiManager: {fileID: 0}
   shootSound: {fileID: 8300000, guid: c0a0f8bc875397f43a2d4ec05adee0d1, type: 3}

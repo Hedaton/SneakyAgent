@@ -15,11 +15,12 @@ GameObject:
   - component: {fileID: 7759885512332399163}
   - component: {fileID: 5014195959608856895}
   - component: {fileID: 4631798965509665447}
+  - component: {fileID: 5703589364760830493}
   - component: {fileID: 2260644320848506997}
   - component: {fileID: 3509885319509880353}
   m_Layer: 0
   m_Name: UMP
-  m_TagString: Weapon
+  m_TagString: Pickable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -173,6 +174,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5703589364760830493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4094384273943218104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ca005224f79a7c4ab6e639df0411d77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemData: {fileID: 11400000, guid: 9f4b647eea228d8488394fd9ece693a9, type: 2}
 --- !u!114 &2260644320848506997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,7 +200,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fpsCamera: {fileID: 0}
-  weaponData: {fileID: 11400000, guid: 9f4b647eea228d8488394fd9ece693a9, type: 2}
   inventorySystem: {fileID: 0}
   uiManager: {fileID: 0}
   shootSound: {fileID: 8300000, guid: c0a0f8bc875397f43a2d4ec05adee0d1, type: 3}

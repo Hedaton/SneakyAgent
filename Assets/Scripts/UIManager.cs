@@ -17,10 +17,6 @@ public class UIManager : MonoBehaviour
 
     public TextMeshProUGUI text;
 
-    [Header("Hotbar")]
-    public List<Image> hotbarItemIcons;
-    public List<GameObject> hotbarHighlits;
-    public InventorySystem inventorySystem;
 
     public void Panel()
     {
@@ -51,43 +47,4 @@ public class UIManager : MonoBehaviour
     {
         ammoDisplay.enabled = show;
     }
-
-    public void UpdateHotbarUI()
-    {
-        for (int i = 0; i < hotbarItemIcons.Count; i++)
-        {
-            if (i < inventorySystem.inventory.Count)
-            {
-                GameObject itemObject = inventorySystem.inventory[i];
-                Item itemComponent = itemObject.GetComponent<Item>();
-                if(itemComponent != null && itemComponent.itemData != null)
-                {
-                    hotbarItemIcons[i].sprite = itemComponent.itemData.itemIcon;
-                    hotbarItemIcons[i].enabled = true;
-                }
-
-            }
-            else
-            {
-                hotbarItemIcons[i].sprite = null;
-                hotbarItemIcons[i].enabled = false;
-            }
-        }
-    }
-
-    public void UpdateHotbarHighlight(int index)
-    {
-        for (int i = 0; i < hotbarHighlits.Count; i++)
-        {
-            if (i == index)
-            {
-                hotbarHighlits[i].SetActive(true);
-            }
-            else
-            {
-                hotbarHighlits[i].SetActive(false);
-            }
-        }
-    }
-
 }
