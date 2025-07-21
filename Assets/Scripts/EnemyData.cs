@@ -1,17 +1,12 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "EnemyData", menuName = "Scriptable Objects/EnemyData")]
+[CreateAssetMenu(fileName = "EnemyData", menuName = "Enemy/EnemyData")]
 public class EnemyData : ScriptableObject
 {
     public float maxHealth;
-    public float speed;
-    public float damage;
-    public float range;
-    public WeaponType weaponType;
-    
-    public enum WeaponType
-    {
-        Melee,
-        Ranged
-    }
+    public float moveSpeed;
+    public bool isRanged;
+    public float detectionRange;
+    public float attackRange;
+    public float attackCooldown;
 }

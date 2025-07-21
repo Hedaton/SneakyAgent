@@ -291,7 +291,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -320,12 +320,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84799c033d0efd348adac958337e2b23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fpsCamera: {fileID: 0}
-  inventorySystem: {fileID: 0}
-  uiManager: {fileID: 0}
   shootSound: {fileID: 8300000, guid: c0a0f8bc875397f43a2d4ec05adee0d1, type: 3}
   reloadSound: {fileID: 8300000, guid: ca1dea649255ff9479cb817448a7027c, type: 3}
   overrideController: {fileID: 22100000, guid: c73807bd2a19c1c4b91ebe2f5a9eff64, type: 2}
+  isHeldByPlayer: 0
+  gunTip: {fileID: 2097099115583051408}
+  fpsCamera: {fileID: 0}
+  uiManager: {fileID: 0}
   currentAmmo: 30
   totalAmmo: 90
 --- !u!82 &9175449958855284713

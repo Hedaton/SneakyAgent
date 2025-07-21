@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: RangedEnemy
   m_EditorClassIdentifier: 
   maxHealth: 100
-  speed: 5
-  damage: 20
-  range: 30
-  weaponType: 1
+  moveSpeed: 4.99
+  isRanged: 1
+  detectionRange: 30
+  attackRange: 15.55
+  attackCooldown: 1

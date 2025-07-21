@@ -7,12 +7,18 @@ using UnityEngine;
 [RequireComponent(typeof(Item))]
 public class WeaponController : MonoBehaviour, IEquippable
 {
-    public Camera fpsCamera;
-    public InventorySystem inventorySystem;
-    public UIManager uiManager;
+    [Header("General Settings")]
     public AudioClip shootSound;
     public AudioClip reloadSound;
     public AnimatorOverrideController overrideController;
+
+    [Header("Controller Settings")]
+    public bool isHeldByPlayer = true;
+    public Transform gunTip;
+
+    [Header("Player Special References")]
+    public Camera fpsCamera;
+    public UIManager uiManager;
 
 
     public int currentAmmo;
@@ -22,94 +28,106 @@ public class WeaponController : MonoBehaviour, IEquippable
     private Animator animator;
     private AudioSource audioSource;
     private Coroutine reloadCoroutine;
-    private float _range;
     private float nextTimeToFire = 0f;
     private bool isReloading;
     private bool isEquipped;
 
-
-
-    private void Start()
+    private void Awake()
     {
         Item item = GetComponent<Item>();
         weaponData = item.itemData as WeaponData;
         if (weaponData == null)
         {
             Debug.LogError("WeaponData is not set on the item.");
-            this.enabled = false;
+            enabled = false;
             return;
         }
-
         audioSource = GetComponent<AudioSource>();
         animator = GetComponentInChildren<Animator>();
+    }
+
+    private void Start()
+    {
         if (overrideController != null)
             animator.runtimeAnimatorController = overrideController;
+
         currentAmmo = weaponData.maxAmmo;
-        _range = weaponData.range;
+
+        if (!isHeldByPlayer)
+        {
+            isEquipped = true;
+        }
 
     }
 
     private void Update()
-    { 
-        if (!isEquipped || isReloading) return;
+    {
+        if (!isEquipped || isReloading || !isHeldByPlayer) return;
 
-        if (Input.GetMouseButton(0) && currentAmmo > 0 && Time.time >= nextTimeToFire)
+        if (Input.GetMouseButton(0))
         {
-            nextTimeToFire = Time.time + weaponData.fireRate;
             Shoot();
         }
-
-        if ((Input.GetKeyDown(KeyCode.R) && totalAmmo > 0 && currentAmmo < weaponData.maxAmmo) ||
-            (currentAmmo == 0 && totalAmmo > 0))
+        else if(Input.GetMouseButton(0) && currentAmmo <= 0 && totalAmmo > 0)
         {
-            if (reloadCoroutine == null)
-            {
-                reloadCoroutine = StartCoroutine(Reload());
-            }
+            Reload();
+        } 
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Reload();
         }
+
+
     }
 
-    private void Shoot()
+    public void Shoot()
     {
-        
+        if (Time.time < nextTimeToFire || isReloading || currentAmmo <= 0) return;
+        nextTimeToFire = Time.time + weaponData.fireRate;
         currentAmmo--;
-        UpdateAmmo();
+
+        Transform fireSource = isHeldByPlayer && gunTip == null ? fpsCamera.transform : gunTip;
+
+
         animator.SetTrigger("Shoot");
         audioSource.PlayOneShot(shootSound);
+
         RaycastHit hit;
-        if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, _range))
+        if (Physics.Raycast(fireSource.position, fireSource.forward, out hit, weaponData.range))
         {
-            if (hit.collider.CompareTag("Enemy"))
+            if (hit.collider.TryGetComponent<Health>(out Health health))
             {
-                Enemy enemy = hit.collider.GetComponent<Enemy>();
-                if (enemy != null)
+                if (health.gameObject != this.transform.root.gameObject)
                 {
-                    enemy.TakeDamage(weaponData.damage);
+                    health.TakeDamage(weaponData.damage);
                 }
             }
-
         }
+        UpdateAmmo();
     }
 
-    IEnumerator Reload()
+    public void Reload()
+    {
+        if (isReloading || totalAmmo <= 0 || currentAmmo == weaponData.maxAmmo) return;
+
+        reloadCoroutine = StartCoroutine(ReloadRoutine());
+    }
+
+    private IEnumerator ReloadRoutine()
     {
         isReloading = true;
         animator.SetTrigger("Reload");
         audioSource.PlayOneShot(reloadSound);
         yield return new WaitForSeconds(weaponData.reloadDuration);
 
-        if (weaponData.maxAmmo - currentAmmo <= totalAmmo)
-        {
-            totalAmmo -= weaponData.maxAmmo - currentAmmo;
-            currentAmmo += weaponData.maxAmmo - currentAmmo;
-        }
-        else
-        {
-            currentAmmo += totalAmmo;
-            totalAmmo = 0;
-        }
-        UpdateAmmo();
+        int ammoNeeded = weaponData.maxAmmo - currentAmmo;
+        int ammoToReload = Mathf.Min(ammoNeeded, totalAmmo);
 
+        currentAmmo += ammoToReload;
+        totalAmmo -= ammoToReload;
+
+        UpdateAmmo();
         isReloading = false;
         reloadCoroutine = null;
     }
@@ -124,7 +142,7 @@ public class WeaponController : MonoBehaviour, IEquippable
 
             if (audioSource != null && audioSource.isPlaying)
                 audioSource.Stop();
-            if(animator != null)
+            if (animator != null)
             {
                 animator.Rebind();
             }
@@ -133,6 +151,7 @@ public class WeaponController : MonoBehaviour, IEquippable
 
     public void OnEquip()
     {
+        if (!isHeldByPlayer) return;
         isEquipped = true;
         uiManager.AmmoDisplay(true);
         UpdateAmmo();
@@ -140,12 +159,10 @@ public class WeaponController : MonoBehaviour, IEquippable
 
     public void OnUnequip()
     {
+        if (!isHeldByPlayer) return;
         isEquipped = false;
-        if(uiManager != null)
-        {
-            uiManager.AmmoDisplay(false);
-        }
         CancelReload();
+        if (uiManager != null) uiManager.AmmoDisplay(false);
     }
 
 
@@ -159,7 +176,7 @@ public class WeaponController : MonoBehaviour, IEquippable
 
     private void UpdateAmmo()
     {
-        if (uiManager != null)
+        if (isHeldByPlayer && uiManager != null)
         {
             uiManager.UpdateAmmoDislay(currentAmmo, totalAmmo);
         }
