@@ -12,6 +12,7 @@ public class Movement : MonoBehaviour
     public LayerMask groundMask;
 
     private Rigidbody rb;
+    private SprintController sprint;
     private float xRotation = 0f;
     private bool isGrounded;
     private bool cursorIsLocked = true;
@@ -19,13 +20,19 @@ public class Movement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        sprint = GetComponent<SprintController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     void Update()
     {
-        Jump();
+        Jump(); 
+
+        if (sprint != null)
+        {
+            sprint.UpdateSprint();
+        }
     }
     private void LateUpdate()
     {
@@ -39,23 +46,20 @@ public class Movement : MonoBehaviour
 
     void Move()
     {
-
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
-        Vector3 moveDirection;
-        if (playerCamera.gameObject.activeSelf)
-        {
-            moveDirection = transform.right * x + transform.forward * z;
 
-        }
-        else
-        {
-            moveDirection = (Vector3.forward * z) + (Vector3.right * x);
-        }
-        Vector3 newVelocity = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);
+        Vector3 moveDirection = playerCamera.gameObject.activeSelf
+            ? transform.right * x + transform.forward * z
+            : Vector3.forward * z + Vector3.right * x;
+
+        float speed = sprint != null ? sprint.CurrentSpeed : moveSpeed;
+
+        if (sprint != null)
+            sprint.IsMoving = moveDirection.magnitude > 0.01f;
+
+        Vector3 newVelocity = new Vector3(moveDirection.x * speed, rb.linearVelocity.y, moveDirection.z * speed);
         rb.linearVelocity = newVelocity;
-
-
 
     }
 

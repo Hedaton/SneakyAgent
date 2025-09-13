@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Interaction : MonoBehaviour
@@ -6,6 +7,8 @@ public class Interaction : MonoBehaviour
     public Camera fpsCamera;
     public Transform hand;
     public float interactionRange = 3f;
+
+    public static event Action toggleTeleport;
 
     private void Update()
     {
@@ -36,11 +39,12 @@ public class Interaction : MonoBehaviour
                         }
                     }
                 }
-                
-
-                
-
             }
+        }   
+
+        if(Input.GetKeyDown(KeyCode.I))
+        {
+            toggleTeleport?.Invoke();
         }
     }
 }

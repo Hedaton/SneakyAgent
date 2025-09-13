@@ -17,4 +17,10 @@ MonoBehaviour:
   isRanged: 1
   detectionRange: 30
   attackRange: 15.55
-  attackCooldown: 1
+  attackCooldown: 2.61
+  fireSpread: 1.03
+  idleTimeRange: {x: 1, y: 5}
+  wanderRadius: 15
+  burstDurationRange: {x: 0.1, y: 0.5}
+  repositionSpeedMultiplier: 2
+  repositionRadius: 3

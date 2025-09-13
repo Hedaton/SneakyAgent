@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using TMPro.EditorUtilities;
 using Unity.VisualScripting;
+using UnityEditor.ShaderGraph.Drawing.Inspector.PropertyDrawers;
 using UnityEngine;
 
 [RequireComponent(typeof(Item))]
@@ -14,7 +15,6 @@ public class WeaponController : MonoBehaviour, IEquippable
 
     [Header("Controller Settings")]
     public bool isHeldByPlayer = true;
-    public Transform gunTip;
 
     [Header("Player Special References")]
     public Camera fpsCamera;
@@ -31,6 +31,8 @@ public class WeaponController : MonoBehaviour, IEquippable
     private float nextTimeToFire = 0f;
     private bool isReloading;
     private bool isEquipped;
+
+    public float FireRate => weaponData.fireRate;
 
     private void Awake()
     {
@@ -68,10 +70,6 @@ public class WeaponController : MonoBehaviour, IEquippable
         {
             Shoot();
         }
-        else if(Input.GetMouseButton(0) && currentAmmo <= 0 && totalAmmo > 0)
-        {
-            Reload();
-        } 
 
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -83,18 +81,29 @@ public class WeaponController : MonoBehaviour, IEquippable
 
     public void Shoot()
     {
+        if (!isHeldByPlayer) return;
+
+        ShootInDirection(fpsCamera.transform.position, fpsCamera.transform.forward);
+        
+    }
+
+    public void ShootInDirection(Vector3 position, Vector3 direction)
+    {
+        if (currentAmmo <= 0 && totalAmmo > 0)
+        {
+            Reload();
+            return;
+        }
+
         if (Time.time < nextTimeToFire || isReloading || currentAmmo <= 0) return;
         nextTimeToFire = Time.time + weaponData.fireRate;
         currentAmmo--;
-
-        Transform fireSource = isHeldByPlayer && gunTip == null ? fpsCamera.transform : gunTip;
-
 
         animator.SetTrigger("Shoot");
         audioSource.PlayOneShot(shootSound);
 
         RaycastHit hit;
-        if (Physics.Raycast(fireSource.position, fireSource.forward, out hit, weaponData.range))
+        if (Physics.Raycast(position, direction, out hit, weaponData.range))
         {
             if (hit.collider.TryGetComponent<Health>(out Health health))
             {
