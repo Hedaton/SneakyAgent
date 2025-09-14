@@ -3,11 +3,11 @@ using UnityEngine.UI;
 
 public class StaminaBar : MonoBehaviour
 {
-    public SprintController sprint;
+    public Movement movement;
     public Slider staminaBar;
 
     private void Update()
     {
-        staminaBar.value = sprint.StaminaPercentage;
+        staminaBar.value = movement.currentStamina / movement.maxStamina;
     }
 }
